@@ -1,8 +1,9 @@
 
 
 1.To Run the MySql in Docker:
-docker run --detach --env MYSQL_ROOT_PASSWORD=dummypassword --env MYSQL_USER=imrishuroy --env MYSQL_PASSWORD=123456 --env MYSQL_DATABASE=authentication-database --name mysql --publish 3306:3306 mysql:8-oracle
-  
+
+    docker run --detach --env MYSQL_ROOT_PASSWORD=dummypassword --env MYSQL_USER=imrishuroy --env MYSQL_PASSWORD=123456 --env MYSQL_DATABASE=authentication-database --name mysql --publish 3306:3306 mysql:8-oracle
+      
 2.Add these properties in application.properties:
 
     spring.jpa.show-sql=true
