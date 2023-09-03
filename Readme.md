@@ -28,7 +28,8 @@ imrishuroy is the username and 3306 is the port number
 5.Give password for the user:
 
 6.To enter into the SQL mode
-\sql
+
+    \sql
 
 7.Add the user roles in the table
 
