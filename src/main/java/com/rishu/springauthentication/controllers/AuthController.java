@@ -60,7 +60,7 @@ public class AuthController {
                 .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
         if (authentication.isAuthenticated()) {
-            final String jwtToken = jwtService.generateToken(loginRequest.getUsername());
+            final String jwtToken = jwtService.generateToken(authentication);
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
             List<String> roles = userDetails.getAuthorities().stream()
                     .map(item -> item.getAuthority())
