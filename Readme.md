@@ -16,27 +16,34 @@
     spring.jpa.hibernate.ddl-auto= update
 
 3.To connect to the MySql in Docker:
-\connect imrishuroy@localhost:3306  - imrishuroy is the username and 3306 is the port number
 
-4.Give password for the user:
+    \connect imrishuroy@localhost:3306  
 
-5.To enter into the SQL mode
+imrishuroy is the username and 3306 is the port number
+
+4.Use the database:
+
+    use authentication_database;
+
+5.Give password for the user:
+
+6.To enter into the SQL mode
 \sql
 
-6.Add the user roles in the table
+7.Add the user roles in the table
 
     INSERT INTO roles(name) VALUES('ROLE_USER');
     INSERT INTO roles(name) VALUES('ROLE_MODERATOR');
     INSERT INTO roles(name) VALUES('ROLE_ADMIN');
 
-7.To check the user roles in the table
+8.To check the user roles in the table
 
     select * from roles;
                           
-8.To check the users in the table
+9.To check the users in the table
 
     select * from users;
       
-9.To check the user roles in the table
+10.To check the user roles in the table
 
     select * from user_roles;
