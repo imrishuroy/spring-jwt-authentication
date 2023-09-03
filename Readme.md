@@ -52,3 +52,11 @@ imrishuroy is the username and 3306 is the port number
 11.To check the user roles in the table
 
     select * from user_roles;
+
+Changes related for in application.properties in deployment in AWS Beanstalk:
+
+    server.port=5000
+
+    spring.datasource.url=jdbc:mysql://${RDS_HOSTNAME:localhost}:${RDS_PORT:3306}/${RDS_DB_NAME:auth_database}
+    spring.datasource.username=${RDS_USERNAME:social-media-user}
+    spring.datasource.password=${RDS_PASSWORD:1234}
