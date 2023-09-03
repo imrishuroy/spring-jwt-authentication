@@ -25,26 +25,30 @@ imrishuroy is the username and 3306 is the port number
 
     use authentication_database;
 
-5.Give password for the user:
+5.Give password for the user
 
 6.To enter into the SQL mode
 
     \sql
 
-7.Add the user roles in the table
+7.Show all the tables in the database
+
+    show tables;
+
+8.Add the user roles in the table
 
     INSERT INTO roles(name) VALUES('ROLE_USER');
     INSERT INTO roles(name) VALUES('ROLE_MODERATOR');
     INSERT INTO roles(name) VALUES('ROLE_ADMIN');
 
-8.To check the user roles in the table
+9.To check the user roles in the table
 
     select * from roles;
                           
-9.To check the users in the table
+10.To check the users in the table
 
     select * from users;
       
-10.To check the user roles in the table
+11.To check the user roles in the table
 
     select * from user_roles;
