@@ -9,8 +9,8 @@ import com.rishu.springauthentication.payload.response.MessageResponse;
 import com.rishu.springauthentication.payload.response.UserInfoResponse;
 import com.rishu.springauthentication.repository.RoleRepository;
 import com.rishu.springauthentication.repository.UserRepository;
-import com.rishu.springauthentication.securiry.jwt.JwtUtils;
-import com.rishu.springauthentication.securiry.services.UserDetailsImpl;
+import com.rishu.springauthentication.security2.JwtService;
+import com.rishu.springauthentication.security2.UserDetailsImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -20,6 +20,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,7 +47,11 @@ public class AuthController {
     PasswordEncoder encoder;
 
     @Autowired
-    JwtUtils jwtUtils;
+    private JwtService jwtService;
+
+
+//    @Autowired
+//    JwtUtils jwtUtils;
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -54,21 +59,40 @@ public class AuthController {
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        if (authentication.isAuthenticated()) {
+            final String jwtToken = jwtService.generateToken(loginRequest.getUsername());
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            List<String> roles = userDetails.getAuthorities().stream()
+                    .map(item -> item.getAuthority())
+                    .collect(Collectors.toList());
 
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            return ResponseEntity.ok()
+                    .body(new UserInfoResponse(
+                            jwtToken,
+                            userDetails.getId(),
+                            userDetails.getUsername(),
+                            userDetails.getEmail(),
+                            roles));
 
-        ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
+        } else {
+            throw new UsernameNotFoundException("invalid user request !");
+        }
 
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-                .body(new UserInfoResponse(userDetails.getId(),
-                        userDetails.getUsername(),
-                        userDetails.getEmail(),
-                        roles));
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+//
+//        ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
+//
+//        List<String> roles = userDetails.getAuthorities().stream()
+//                .map(item -> item.getAuthority())
+//                .collect(Collectors.toList());
+//
+//        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+//                .body(new UserInfoResponse(userDetails.getId(),
+//                        userDetails.getUsername(),
+//                        userDetails.getEmail(),
+//                        roles));
     }
 
     @PostMapping("/signup")
@@ -120,11 +144,11 @@ public class AuthController {
 
     }
 
-    @PostMapping("/signout")
-    public ResponseEntity<?> logoutUser() {
-        ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
-
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .body(new MessageResponse("You've been signed out!"));
-    }
+//    @PostMapping("/signout")
+//    public ResponseEntity<?> logoutUser() {
+//        ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
+//
+//        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
+//                .body(new MessageResponse("You've been signed out!"));
+//    }
 }
